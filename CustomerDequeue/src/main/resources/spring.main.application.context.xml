@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sec="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:wss="http://jax-ws.dev.java.net/spring/servlet" xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+       xmlns:jms="http://www.springframework.org/schema/jms" xmlns:orcl="http://www.springframework.org/schema/data/orcl"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.1.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security-3.1.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-3.1.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+       http://www.springframework.org/schema/jms
+       http://www.springframework.org/schema/jms/spring-jms-3.0.xsd
+       http://jax-ws.dev.java.net/spring/servlet
+       http://jax-ws.dev.java.net/spring/servlet.xsd
+       http://jax-ws.dev.java.net/spring/core
+       http://jax-ws.dev.java.net/spring/core.xsd
+       http://www.springframework.org/schema/data/orcl
+       http://www.springframework.org/schema/data/orcl/spring-data-orcl-1.0.xsd
+       ">
+    <!-- Loads, displays and injects the properties -->
+    <bean id="appProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="localOverride" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:application.properties</value>
+                <!-- com.ema.daa.employee.properties.1 -->
+                <value>file:${com.springboot.uttamkeshri.customer.properties}</value>
+                <value>file:${com.springboot.uttamkeshri.customer.properties.1}</value>
+                <value>file:${com.springboot.uttamkeshri.customer.properties.2}</value>
+                <value>file:${com.springboot.uttamkeshri.customer.properties.3}</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="propertiesDisplayer" class="com.ema.properties.utils.PropertiesDisplayer" init-method="display">
+        <property name="properties" ref="appProperties" />
+    </bean>
+    <context:property-placeholder ignore-unresolvable="true" properties-ref="appProperties"/>
+
+    <!-- Beans Related to the EMA process Framework -->
+    <!-- processElement Getters -->
+    
+    <bean id="springProcessElementGetter" class="com.ema.process.impl.CachingProcessElementGetter">
+        <property name="wrappedGetter">
+            <bean class="com.ema.process.impl.decorator.DecoratingProcessElementGetter">
+                <property name="wrappedGetter" >
+                    <bean class="com.ema.process.spring.impl.SpringProcessElementGetter" />
+                </property>
+            </bean>
+        </property>
+    </bean>
+    
+     <bean id="messageDelegate" class="com.springboot.uttamkeshri.jms.CustomerDetailsListener">
+        <property name="processElementGetter" ref="springProcessElementGetter"/>
+        <property name="processElementKey" value="customerWorkflow"/>
+    </bean>
+</beans>

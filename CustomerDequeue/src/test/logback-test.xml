@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<Appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class = "ch.qos.logback.classic.PatternLayout">
+			<pattern>
+				%date [%thread] %level %logger{25} - %msg%n
+			</pattern>
+		</layout>
+	</Appender>
+
+<!-- LOG FOR THE TEST CUSTOM COMPONENTS  -->
+
+    <appender name="TestAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.rootfolder}/automated_test/${mydate}/log_back/automated_test.%d{yyyyMMdd_HH}.log</FileNamePattern>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%date [%thread] %level %logger{25} - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <root level="${global.log.level}">
+        <appender-ref ref="TestAppender" />
+    </root>
+    
+    
+</configuration>

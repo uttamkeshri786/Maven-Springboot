@@ -1,0 +1,109 @@
+{"properties": [
+  {
+    "name": "spring.datasource.driver.class",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.datasource.driver.class'"
+  },
+  {
+    "name": "spring.jdbc.oracle.program",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.jdbc.oracle.program'"
+  },
+  {
+    "name": "oracle.jdbc.maximumPoolSize.processing",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.maximumPoolSize.processing'"
+  },
+  {
+    "name": "oracle.jdbc.maximumPoolSize.processing",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.maximumPoolSize.processing'"
+  },
+  {
+    "name": "oracle.jdbc.maximumPoolSize.processing",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.maximumPoolSize.processing'"
+  },
+  {
+    "name": "oracle.jdbc.maximumPoolSize.processing",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.maximumPoolSize.processing'"
+  },
+  {
+    "name": "oracle.jdbc.connection.test.query",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.connection.test.query'"
+  },
+  {
+    "name": "oracle.jdbc.dequeue.pool.name",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.dequeue.pool.name'"
+  },
+  {
+    "name": "oracle.jdbc.dequeue.thread.count",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.dequeue.thread.count'"
+  },
+  {
+    "name": "oracle.jdbc.dequeue.queue.name",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.dequeue.queue.name'"
+  },
+  {
+    "name": "oracle.jdbc.program.dequeue",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.program.dequeue'"
+  },
+  {
+    "name": "oracle.jdbc.update.product",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.update.product'"
+  },
+  {
+    "name": "oracle.jdbc.update.validationEndDate",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.update.validationEndDate'"
+  },
+  {
+    "name": "apcahe.http.baseUrl",
+    "type": "java.lang.String",
+    "description": "A description for 'apcahe.http.baseUrl'"
+  },
+  {
+    "name": "apache.http.method",
+    "type": "java.lang.String",
+    "description": "A description for 'apache.http.method'"
+  },
+  {
+    "name": "apache.http.connectTimeout",
+    "type": "java.lang.String",
+    "description": "A description for 'apache.http.connectTimeout'"
+  },
+  
+  
+  {
+    "name": "apache.http.readTimeout",
+    "type": "java.lang.String",
+    "description": "A description for 'apache.http.readTimeout'"
+  }, 
+  {
+    "name": "apache.http.accept",
+    "type": "java.lang.String",
+    "description": "A description for 'apache.http.accept'"
+  },   
+  {
+    "name": "apache.http.contentType",
+    "type": "java.lang.String",
+    "description": "A description for 'apache.http.contentType'"
+  },
+  {
+    "name": "spring.freeMarker.template.path",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.freeMarker.template.path'"
+  },
+  {
+    "name": "oracle.jdbc.transaction.select.query",
+    "type": "java.lang.String",
+    "description": "A description for 'oracle.jdbc.transaction.select.query'"
+  }
+]}

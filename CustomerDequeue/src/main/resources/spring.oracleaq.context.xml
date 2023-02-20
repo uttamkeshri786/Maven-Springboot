@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:sec="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:wss="http://jax-ws.dev.java.net/spring/servlet" xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+    xmlns:jms="http://www.springframework.org/schema/jms" xmlns:orcl="http://www.springframework.org/schema/data/orcl"
+    xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.1.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security-3.1.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-3.1.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+       http://www.springframework.org/schema/jms
+       http://www.springframework.org/schema/jms/spring-jms-3.0.xsd
+       http://jax-ws.dev.java.net/spring/servlet
+       http://jax-ws.dev.java.net/spring/servlet.xsd
+       http://jax-ws.dev.java.net/spring/core
+       http://jax-ws.dev.java.net/spring/core.xsd
+       http://www.springframework.org/schema/data/orcl
+       http://www.springframework.org/schema/data/orcl/spring-data-orcl-1.0.xsd
+       ">
+    <beans profile="oracle">
+    <bean id="connectionFactory" class="oracle.jms.AQjmsFactory" factory-method="getQueueConnectionFactory">
+        <constructor-arg ref="dataSourceDequeue"/>
+    </bean>
+    <!-- AQ native stuff -->
+    <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSourceDequeue" />
+    </bean>
+
+    <jms:listener-container connection-factory="connectionFactory"
+        transaction-manager="transactionManager" message-converter="messageConverter"
+        destination-type="queue"
+        container-class="org.springframework.data.jdbc.jms.listener.oracle.AdtMessageListenerContainer"
+        concurrency="${oracle.jdbc.dequeue.thread.count}" acknowledge="transacted">
+        <jms:listener destination="${oracle.jdbc.dequeue.queue.name}" ref="messageDelegate" method="onMessage" />
+    </jms:listener-container>
+
+    <bean id="messageConverter"
+        class="org.springframework.data.jdbc.jms.support.converter.oracle.MappingAdtMessageConverter">
+        <constructor-arg>
+            <bean
+                class="org.springframework.data.jdbc.jms.support.oracle.StructDatumMapper">
+                <constructor-arg index="0" value="CUST_NOTIFY" />
+                <constructor-arg index="1" value="com.springboot.uttamkeshri.jms.EventNotificationService" />
+            </bean>
+        </constructor-arg>
+    </bean>
+   </beans>
+</beans>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%date [%thread] %level %logger{25} - %msg%n</Pattern>
+        </layout>
+    </appender>
+    <appender name="AsynchConsoleAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="ConsoleAppender" />
+    </appender>
+
+    <!-- LOG FOR THE TEST CUSTOM COMPONENTS -->
+    <appender name="TestAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>./target/log_back/CustomerDequeue.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>./target/log_back/default.%d{yyyyMMdd_HH}.log</FileNamePattern>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%date [%thread] %level %logger{25} - %msg%n</Pattern>
+        </layout>
+    </appender>
+    <appender name="AsynchTestAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="TestAppender" />
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="AsynchTestAppender" />
+    </root>
+
+    <jmxConfigurator />
+</configuration>

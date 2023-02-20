@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.1.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security-3.1.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-3.1.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task.xsd
+       ">
+
+    <import resource="classpath:jdbc.util.default.legacy.context.xml" />
+    <!-- database configuration -->
+    <bean id="oracleDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${spring.datasource.driver.class}" />
+        <property name="url" value="${spring.datasource.hikari.jdbc-url}" />
+        <property name="username" value="${spring.datasource.username}" />
+        <property name="password" value="${spring.datasource.password}" />
+         <property name="connectionProperties">
+            <props>
+                <prop key="v$session.program">${spring.jdbc.oracle.program}</prop>
+            </props>
+        </property>
+    </bean>
+    <!-- 
+    <bean id="encryptedDataSource" class="com.ema.jdbc.utils.wrappers.cipher.StandardEncryptingDataSource">
+        <constructor-arg ref="oracleDataSource" />
+        <constructor-arg ref="com.ema.jdbc.default.legacyCipherFactory" />
+    </bean>
+    -->
+    <!-- hikariCp config -->
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="dataSource" ref="encryptedDataSource" />
+        <property name="poolName" value="${com.ema.jdbc.transaction.pool.name}"/>
+        <property name="connectionTestQuery" value="${oracle.jdbc.connection.test.query}"/>
+        <property name="maximumPoolSize" value="${oracle.jdbc.maximumPoolSize.processing}" />
+    </bean>
+    <bean id="hikariDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig" />
+    </bean>
+
+    <bean id="dataSource" class="com.ema.jdbc.utils.wrappers.MonitoredDataSourceWrapper" init-method="test">
+        <constructor-arg ref="hikariDataSource" />
+    </bean>	
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <bean id="namedJdbcTemplate"
+          class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <!-- hikariCp config for dequeue only-->
+    <bean id="dequeueOracleDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+           <property name="driverClassName" value="${spring.datasource.driver.class}" />
+        <property name="url" value="${spring.datasource.hikari.jdbc-url}" />
+        <property name="username" value="${spring.datasource.username}" />
+        <property name="password" value="${spring.datasource.password}" />
+          <property name="connectionProperties">
+            <props>
+                <prop key="v$session.program">${spring.jdbc.oracle.program.dequeue:${spring.jdbc.oracle.program}}
+                </prop>
+            </props>
+        </property>
+    </bean>
+    <!--  
+    <bean id="dequeueEncryptedDataSource" class="com.ema.jdbc.utils.wrappers.cipher.StandardEncryptingDataSource">
+        <constructor-arg ref="dequeueOracleDataSource" />
+        <constructor-arg ref="com.ema.jdbc.default.legacyCipherFactory" />
+    </bean>
+    -->
+     <bean id="hikariConfigDequeue" class="com.zaxxer.hikari.HikariConfig">
+        <property name="dataSource" ref="dequeueEncryptedDataSource" />
+        <property name="poolName" value="${oracle.jdbc.dequeue.pool.name}"/>
+        <property name="connectionTestQuery" value="${oracle.jdbc.connection.test.query}"/>
+        <property name="maximumPoolSize" value="${spring.datasource.hikari.maximum-pool-size}" />
+    </bean>
+    <bean id="hikariDataSourceDequeue" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfigDequeue" />
+    </bean>
+	<!--  
+    <bean id="monitoredDataSourceWrapper" class="com.ema.jdbc.utils.wrappers.MonitoredDataSourceWrapper" init-method="test">
+        <constructor-arg ref="hikariDataSourceDequeue" />
+    </bean>
+    -->
+    <!-- org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy -->
+    <bean id="dataSourceDequeue" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+       <constructor-arg ref="monitoredDataSourceWrapper" />
+    </bean>
+</beans>
+
